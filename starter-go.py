@@ -18,12 +18,13 @@ def deroulementRandom(b):
         print("Resultat : ", b.result())
         return
     b.push(randomMove(b))
+    print("eval_board : ",eval_board(b))
     deroulementRandom(b)
     b.pop()
-
+"""
 board = Goban.Board()
 deroulementRandom(board)
-
+"""
 ''' Exemple de déroulement random avec weak_legal_moves()'''
 
 def weakRandomMove(b):
@@ -55,9 +56,14 @@ def weakDeroulementRandom(b):
         b.pop()
     weakDeroulementRandom(b)
     b.pop()
+"""
+board = Goban.Board()
+deroulementRandom(board)
+"""
+def eval_board(b):
+    [score_blacks,score_white]=b.compute_score()
+    return score_white-score_blacks          
+
 
 board = Goban.Board()
 deroulementRandom(board)
-
-
-
