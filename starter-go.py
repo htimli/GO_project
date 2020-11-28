@@ -62,8 +62,76 @@ deroulementRandom(board)
 """
 def eval_board(b):
     [score_blacks,score_white]=b.compute_score()
-    return score_white-score_blacks          
+    return score_white-score_blacks    
+
+def MinMax(b,p):
+    if b.is_game_over():
+        if b.result() == "1-0":         
+            return 1000
+        elif b.result() == "0-1":
+            return -1000
+        else :
+            return 0         
+    if p==0 :
+        return eval_board(b)
+    else :
+        pire=10000
+        for m in b.generate_legal_moves():
+            b.push(m)
+            pire=min(pire,MaxMin(b,p-1))
+            b.pop()
+        return pire
+
+def MaxMin(b,p):
+    if b.is_game_over():
+        if b.result() == "1-0":         
+            return 1000
+        elif b.result() == "0-1":
+            return -1000
+        else :
+            return 0         
+    if p==0 :
+        return eval_board(b)
+    else :
+        meilleur=-10000
+        for m in b.generate_legal_moves():
+            b.push(m)
+            meilleur=max(meilleur,MinMax(b,p-1))
+            b.pop()
+        return meilleur
+
+def best_move_MiniMax(b,p):
+    if b.is_game_over() or p==0:
+        return None
+    else:     
+        best_move = None
+        score = -10000
+        for m in b.generate_legal_moves():
+            b.push(m)
+            res=MinMax(b,p-1)
+            if res > score :
+                score = res
+                best_move = m
+            b.pop()
+    return best_move        
+
+def MiniMax_vs_Aleatoire(b,p,is_ennemi):
+    print("----------")
+    b.prettyPrint()
+    if b.is_game_over():
+        print("Resultat : ", b.result())
+        return  
+    if is_ennemi :
+        b.push(randomMove(b))
+    else :
+        b.push(best_move_MiniMax(b,p))
+
+    MiniMax_vs_Aleatoire(b,p,not is_ennemi)   
+    b.pop()
+    
+        
+
 
 
 board = Goban.Board()
-deroulementRandom(board)
+MiniMax_vs_Aleatoire(board,1,True)
