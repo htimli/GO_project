@@ -191,7 +191,7 @@ def MiniMax_a_b_vs_Aleatoire(b,p,is_ennemi,cpt):
         print("Resultat : ", b.result())
         return  
     else :
-        cpt=cpt+1
+        cpt+=1
         print("cpt = ",cpt)
         if(is_ennemi or cpt < 40 ):
             b.push(randomMove(b))
