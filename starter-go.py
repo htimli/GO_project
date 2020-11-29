@@ -128,10 +128,92 @@ def MiniMax_vs_Aleatoire(b,p,is_ennemi):
 
     MiniMax_vs_Aleatoire(b,p,not is_ennemi)   
     b.pop()
-    
+
+def Mini_Max_a_b(b,p,alpha,beta):
+    if b.is_game_over():
+        res = b.result()
+        if res == "1-0": 
+            return 1000
+        elif res =="0-1":
+            return -1000
+        else:
+            return 0
+    if p==0:      
+        return eval_board(b)
+    else :
+        for m in b.generate_legal_moves():
+            b.push(m)
+            beta=min(beta,Max_Min_a_b(b,p-1,alpha,beta))
+            b.pop()
+            if alpha >= beta :
+                return alpha 
+        return beta  
+
+def Max_Min_a_b(b,p,alpha,beta):
+    if b.is_game_over():
+        res = b.result()
+        if res == "1-0": 
+            return 1000
+        elif res =="0-1":
+            return -1000
+        else :
+            return 0
+    if p==0:      
+        return eval_board(b)
+    else :
+        for m in b.generate_legal_moves():
+            b.push(m)
+            alpha=max(alpha,Min_Max_a_b(b,p-1,alpha,beta))
+            b.pop()
+            if alpha >= beta :
+                return beta 
+        return alpha   
+
+def best_move_Mini_Max_a_b(b,p):
+    if p==0 or b.is_game_over() :
+        return None 
+    else:
+        best_move=None 
+        score=-10000
+        for m in b.generate_legal_moves():
+            b.push(m)
+            res = Mini_Max_a_b(b,p,score,10000)
+            if res > score : 
+                best_move = m 
+                score = res 
+            b.pop()
+        return best_move 
+
+def MiniMax_a_b_vs_Aleatoire(b,p,is_ennemi,cpt):
+    print("----------")
+    b.prettyPrint()    
+    if b.is_game_over():
+        print("Resultat : ", b.result())
+        return  
+    else :
+        cpt=cpt+1
+        print("cpt = ",cpt)
+        if(is_ennemi or cpt < 40 ):
+            b.push(randomMove(b))
+        else :
+            b.push(best_move_Mini_Max_a_b(b,p))
+        MiniMax_a_b_vs_Aleatoire(b,p,not is_ennemi,cpt)
+        b.pop()    
+
         
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 board = Goban.Board()
-MiniMax_vs_Aleatoire(board,1,True)
+MiniMax_a_b_vs_Aleatoire(board,1,True,0)
